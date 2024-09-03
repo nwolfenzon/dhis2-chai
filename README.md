@@ -1,100 +1,212 @@
-# iMISS DHIS2 Custom Code Repository
+# DHIS2 Custom Code Repository
 
-## Overview
+## 1. Overview
 
-This repository contains all technical documentation and custom code for the Mozambique National Malaria Control Program (NMCP). The code and resources in this repository are designed to be integrated into the country's DHIS2 instance, known as iMISS (Integrated Malaria Information Storage System).
+This repository contains technical documentation and custom code for DHIS2 instances. The code and resources in this repository are designed to serve as a resource for DHIS2 developers and can be integrated into specific DHIS2 instances.
 
-## Purpose
+## 2. Purpose
 
 The primary goals of this repository are:
 
-1. To centralize and manage custom code used for building forms and reports in the iMISS DHIS2 instance.
-2. To facilitate technical knowledge sharing across developers working on the Mozambique NMCP project.
+1. To centralize and manage DHIS2 code used across CHAI
+2. To facilitate technical knowledge sharing across developers working at CHAI
 
-## Repository Structure
+## 3. Repository Structure
 
 ```
-dhis2-custom-forms/
-├── src/
-│   ├── forms/
+CHAI-DHIS2/
+├── web/
+│   ├── models/
 │   ├── reports/
-│   └── shared/
-├── dist/
-├── tests/
-├── docs/
+│   ├── tracker-capture/
+│   ├── utils/
+│   └── docker-compose.dev.yml
+├── python/
+│   ├── data/
+│   ├── eda/
+│   ├── utils/
+│   ├── README.MD
+│   └── requirements.txt
 ├── .gitignore
-├── README.md
-└── package.json
+└── README.md
 ```
 
-- `src/`: Source code for custom forms and reports
-- `dist/`: Compiled or processed files
-- `tests/`: Unit and integration tests
-- `docs/`: Additional documentation
+- `web/`: source code for custom DHIS2 forms, reports, and enabling utilities
+- `web/reports/`: custom DHIS2 reports
+- `web/tracker-capture/`: custom DHIS2 forms for the tracker capture module
+- `web/utils/`: generally useful javascript files for extending custom form functionality
+- `web/docker-compose.dev.yml`: docker compose file used for local development with this repository
 
-## Getting Started
 
-Developers have two options for working on custom forms and reports for the Mozambique NMCP DHIS2 project:
+- `python/`: code for python data analysis and DHIS2 apis
+- `python/data/`: directory to store data when doing analysis. (Note: all data files in this directory will be ignored by git and excluded from version control)
+- `python/eda`: exploratory data analysis files
+- `python/utils/`: generally useful python files for interacting with the DHIS2 api, DHIS2 automation, or DHIS2 analysis
+- `python/.env.example`: sample environment variable definition file. Create a `python/.env` file to store sensitive information and avoid including credentials in version control
 
-### Option 1: Local DHIS2 Development Environment
+## 4. Getting Started
+Clone this repository:
+```
+git clone https://github.com/nwolfenzon-chai/chai-dhis2.git
+```
 
-To set up a local DHIS2 development environment using Docker:
+See [DHIS2 Web Code](#4-dhis2-web-code) or [DHIS2 Python Scripts](#5-dhis2-python-scripts) sections for details
+
+## 4. DHIS2 Web Code
+
+This section of the repository contains HTML, JS, and CSS filed used to create DHIS2 form and reports. These files are designed to serve as inspiration for custom components supported by DHIS2.
+
+Developers have two options for working on custom forms and reports:
+
+### 4.1 (Option 1) Local Development using dockerized DHIS2-Core
 
 1. Install Docker on your machine if you haven't already. Visit [Docker's official website](https://www.docker.com/get-started) for installation instructions.
 
-2. Pull the DHIS2 development image:
+2. Clone the DHIS2 Core repository. This will allow you to run a local instance of the DHIS2 web API and postgres database
    ```
-   docker pull dhis2/core:dev
-   ```
-
-3. Run the DHIS2 container:
-   ```
-   docker run -p 8080:8080 -d dhis2/core:dev
+   git clone https://github.com/dhis2/dhis2-core.git
    ```
 
-4. Access the DHIS2 instance at `http://localhost:8080`. The default username is "admin" and the password is "district".
+3. Replace the path in `docker-compose.dev.yml` file with the relative path from the DHIS2 Core repo to this the web project in this repo (`<PATH TO THIS REPO>/chai-dhis2/web`)
 
-5. Clone this repository:
+4. `cd` into the DHIS2 Core repository web directory
    ```
-   git clone https://github.com/your-org/mozambique-nmcp-dhis2.git
-   cd mozambique-nmcp-dhis2
-   ```
-
-6. Install dependencies:
-   ```
-   npm install
+   cd /path/to/repository/dhis2-core
    ```
 
-7. Start working on custom forms and reports in the `src/` directory.
-
-### Option 2: iMISS Dev Instance
-
-To work directly on the iMISS Dev instance:
-
-1. Request access to the iMISS Dev instance from the project administrator.
-
-2. Once you have access, log in to the Dev instance at [Dev iMISS URL].
-
-3. Clone this repository:
+5. Spin up the DHIS2 Core Docker containers by chaining the compose files:
    ```
-   git clone https://github.com/your-org/mozambique-nmcp-dhis2.git
-   cd mozambique-nmcp-dhis2
+   DHIS2_IMAGE=dhis2/core:2.40.0.1 DHIS2_DB_DUMP_URL=https://databases.dhis2.org/sierra-leone/2.40.0/dhis2-db-sierra-leone.sql.gz docker compose -f docker-compose.yml -f /path/to/chai-dhis2/docker-compose.dev.yml up -d
+   ```
+   *(Note: The above command uses 2.40.0 version of DHIS2. You can change the version numbers to use a difference version)*
+
+6. HTML, CSS, and JS files can be accessed in custom forms and reports at `http://localhost:3000/chai-dhis2`. Example:
+   ```
+   <!DOCTYPE html>
+   <html lang="en">
+   <head>
+
+      <!-- Custom styles -->
+      <link rel="stylesheet" href="http://localhost:3000/chai-dhis2/reports/sample-report/style.css">
+
+      <!-- Custom scripts -->
+      <script src="http://localhost:3000/chai-dhis2/reports/sample-report/script.js"></script>
+
+   </head>
+   <body>
+      <!-- Custom code goes here -->
+   </body>
    ```
 
-5. Start working on custom forms and reports in the `src/` directory.
 
-6. To test your changes, you can manually copy the HTML, CSS, and JavaScript code into the appropriate sections in the iMISS Dev instance.
+7. Access the DHIS2 instance at `http://localhost:8080`. The default username is "admin" and the password is "district".
 
-### Development Workflow
+### 4.2 Using a dev instance
+
+1. Log in to an existing development instance of DHIS2 (e.g., country instance, DHIS2 play instance, etc.)
+2. Navigate to the Maintenance or Reports app in DHIS2
+3. Write HTML, CSS, and Javascript directly into your browser
+4. Copy the files into this repository in the appropriate directory (e.g., `chai-dhis2/web/reports/sample-report`)
+
+
+## 5. DHIS2 Python Scripts
+
+This section of the repository contains Python scripts related to DHIS2. These scripts are designed to interact with DHIS2 systems, perform data operations, and automate various tasks.
+
+### 5.1 Setup
+
+#### Creating a virtual environment
+
+To ensure consistency and avoid conflicts with other Python projects, we recommend using a virtual environment. Follow these steps to set up your environment:
+
+1. Navigate to the `python` directory of this repository
+   ```
+   cd path/to/repository/chai-dhis2/python
+   ```
+
+2. Create a virtual environment
+   ```
+   /path/to/repository/chai-dhis2/python$ python -m venv .venv
+   ```
+
+3. Activate the virtual environment
+
+ - on Windows:
+    ```
+    /path/to/repository/chai-dhis2/python$ .venv\Scripts\activate
+    ```
+
+  - on macOS and Linux:
+    ```
+    /path/to/repository/chai-dhis2/python$ source .venv/bin/activate
+    ```
+
+4. Install the requird packages
+```
+/path/to/repository/chai-dhis2/python$ pip install -r requirements.txt
+```
+
+#### Environment variables
+
+Sensitive information such as API keys, database credentials, and other configuration details should be stored in environment variables. We use a `.env` file to manage these variables.
+
+1. Create a `.env` file in the python directory
+    ```
+    /path/to/repository/chai-dhis2/python$ touch .env
+    ```
+
+2. Add your environment variables to the `.env` file (see `.env.example` for guidance). Example:
+    ```
+    DHIS2_URL=https://your-dhis2-instance.com
+    DHIS2_USERNAME=your_username
+    DHIS2_PASSWORD=your_password
+    ```
+
+3. To use these variables in your Python scripts, you can use the `python-dotenv` library
+    ```
+    from dotenv import load_dotenv
+    import os
+
+    load_dotenv()
+
+    dhis2_url = os.getenv('DHIS2_URL')
+    dhis2_username = os.getenv('DHIS2_USERNAME')
+    dhis2_password = os.getenv('DHIS2_PASSWORD')
+    ```
+
+### 5.2 Usage
+
+#### Utility Scripts
+
+Users can contribute generally applicable Python files to the `python/utils` directory. These scripts should be designed to perform common operations related to DHIS2 data and can be used across different projects. Examples of such utility scripts include:
+
+1. **DHIS2 API Interactions:** Scripts that pull data from the DHIS2 API, handle authentication, or manage API requests.
+2. **Data Operations:** Scripts that perform general data operations on DHIS2 data, such as cleaning, transforming, or aggregating data.
+3. **Data Visualization:** Scripts that create data visualizations from DHIS2 data, using libraries like Matplotlib, Seaborn, or Plotly.
+4. **Data Export/Import:** Scripts that handle exporting DHIS2 data to various formats (CSV, JSON, etc.) or importing data into DHIS2.
+
+#### Exploratory Data Analysis
+
+Users can add illustrative exploratory data analysis scripts that they've leverage in their work to facilitate cross-team knowledge sharing.
+
+#### Adding a script
+
+When adding a new python script:
+1. Place the script in the `python/utils` or `python/eda` directory in the appropriate subdirectory (e.g., `python/utils/api`)
+2. Ensure the script is well-documented with docstrings and comments
+3. If the script requires additional dependencies, add them to the `requirements.txt` file
+4. If the script requires environment variables, document the necessary variables and data types (do not include values)
+
+## 6. Development Workflow
 
 1. Create a new branch for your feature or bug fix:
    ```
-   git checkout -b feature/your-feature-name
+   git checkout -b branch-name
    ```
 
-2. Make your changes in the appropriate directories under `src/`.
+2. Make your changes in the appropriate directories
 
-3. Test your changes either locally or on the Dev instance.
+3. Test your changes either locally or on the dev instance.
 
 4. Commit your changes:
    ```
@@ -104,19 +216,17 @@ To work directly on the iMISS Dev instance:
 
 5. Push your changes to the repository:
    ```
-   git push origin feature/your-feature-name
+   git push origin branch-name
    ```
 
-6. Create a pull request for review.
+6. Navigate to the repository on github
 
+7. Create a pull request for review.
 
-## Usage
-
-(Provide information on how to use the custom forms and reports, including any specific instructions for implementation in DHIS2)
 
 ## Contributing
 
-We welcome contributions from developers working on the Mozambique NMCP project. Please follow these steps to contribute:
+We welcome contributions from CHAI developers working on any DHIS2-related project. Please follow these steps to contribute:
 
 1. Fork the repository
 2. Create a new branch (`git checkout -b feature/your-feature-name`)
@@ -127,12 +237,11 @@ We welcome contributions from developers working on the Mozambique NMCP project.
 
 ## Best Practices
 
-Given the context of this project, where code is manually copied to DHIS2 for use in custom forms or reports, adhering to the following best practices is crucial:
+Given DHIS2 development paradigms, where code is manually copied to DHIS2 for use in custom forms or reports, adhering to the following best practices will facilitate code management and knowledge sharing:
 
 1. Version Control and Documentation
 
 * Make frequent, small commits with clear and descriptive messages.
-* Tag releases that correspond to versions deployed in the DHIS2 instance.
 * Maintain a changelog detailing modifications made to each form or report.
 * Include the date of last update and the corresponding commit hash in comments at the top of each file.
 
@@ -154,7 +263,6 @@ Given the context of this project, where code is manually copied to DHIS2 for us
 
 * Maintain a deployment log that records which version of each form or report is currently active in the DHIS2 instance.
 * Include instructions for rolling back changes in case of issues after deployment.
-* When updating existing forms or reports, ensure changes are backward compatible or provide clear upgrade paths.
 
 5. Performance and Security
 
@@ -164,10 +272,3 @@ Given the context of this project, where code is manually copied to DHIS2 for us
 
 By following these focused best practices, we can maintain a high-quality, manageable codebase that is well-suited for the DHIS2 environment and the manual deployment process.
 
-## Testing
-
-TODO
-
-## Deployment
-
-TODO

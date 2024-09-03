@@ -127,14 +127,6 @@ try {
   const orgUnits = await apiClient.get('organisationUnits.json', mergedParams);
   console.log('Organisation Units:', orgUnits);
 
-  // Fetch tracked entity instances with paging
-  // const trackedEntityInstances = await apiClient.get('trackedEntityInstances', {
-  //   ou: ou,
-  //   program: program,
-  //   fields: 'id,orgUnit,attributes'
-  // });
-  // console.log('Tracked Entity Instances:', trackedEntityInstances);
-
 } catch (error) {
   console.error('Error fetching data:', error);
 }

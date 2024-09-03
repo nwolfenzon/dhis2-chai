@@ -1,0 +1,16 @@
+# This file is chained with the DHIS2 Core docker-compose.yml to create a service which serves
+# the files in this repository using Nginx server, making them accessible to custom DHIS2 forms and reports.
+#
+# This is useful when developing custom apps and modules for DHIS2.
+#
+#
+
+version: '3'
+
+services:
+  static:
+      image: nginx:alpine
+      volumes:
+        - ../chai-dhis2:/usr/share/nginx/html/chai-dhis2
+      ports:
+        - "3000:80"
