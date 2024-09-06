@@ -1,5 +1,6 @@
 /**
  * Sends a call to the DHIS2 Analytics Web API and returns the data to a Google Sheet.
+ * Before running, ensure a sheet named 'Raw Data' is available.
  * 
  * @return DHIS2 analytics data in columns and rows in a Google Sheet.
  * @customfunction
@@ -20,6 +21,7 @@ function displayToastAlert(message) {
   SpreadsheetApp.getActive().toast(message, "Message:"); 
 }
 
+//[Laos-specific requirement]
 //Generates a string of months for the current plus previous 2 years,
 //to be inserted into the DHIS2 API call as the period dimension
 //Written with support from AskCodi
