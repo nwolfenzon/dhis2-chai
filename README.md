@@ -27,6 +27,7 @@ CHAI-DHIS2/
 │   ├── utils/
 │   ├── README.MD
 │   └── requirements.txt
+├── apps-script/
 ├── .gitignore
 └── README.md
 ```
@@ -44,13 +45,15 @@ CHAI-DHIS2/
 - `python/utils/`: generally useful python files for interacting with the DHIS2 api, DHIS2 automation, or DHIS2 analysis
 - `python/.env.example`: sample environment variable definition file. Create a `python/.env` file to store sensitive information and avoid including credentials in version control
 
+- `apps-script/`: Google Apps Script code for Google Suite products to interact with the DHIS2 APIs
+
 ## 4. Getting Started
 Clone this repository:
 ```
 git clone https://github.com/nwolfenzon-chai/chai-dhis2.git
 ```
 
-See [DHIS2 Web Code](#4-dhis2-web-code) or [DHIS2 Python Scripts](#5-dhis2-python-scripts) sections for details
+See [DHIS2 Web Code](#4-dhis2-web-code), [DHIS2 Python Scripts](#5-dhis2-python-scripts) or [DHIS2 Apps Script Code](#6-dhis2-apps-script-code) sections for details
 
 ## 4. DHIS2 Web Code
 
@@ -197,7 +200,21 @@ When adding a new python script:
 3. If the script requires additional dependencies, add them to the `requirements.txt` file
 4. If the script requires environment variables, document the necessary variables and data types (do not include values)
 
-## 6. Development Workflow
+## 6. DHIS2 Apps Script code
+
+This section of the repository contains Google Apps Script code related to DHIS2. This code allows Google Suite products like Google Sheets to interact with the DHIS2 APIs.
+
+### 6.1 Setup
+
+#### Google Sheets
+
+To add to your Google Sheet, open Extensions > Apps Script and paste into Editor > Code.gs.
+
+A custom menu will appear with a menu item to run the script.
+
+The script can also can be set to a scheduler within Google Apps Script to automatically import data at a set time interval. To do so, open Extensions > Apps Script and go to Triggers. Select Add Trigger.
+
+## 7. Development Workflow
 
 1. Create a new branch for your feature or bug fix:
    ```
